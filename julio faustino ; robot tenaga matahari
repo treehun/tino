@@ -1,0 +1,86 @@
+// Library untuk mengendalikan motor
+#include <MotorDriver.h>
+
+// Library untuk mengelola modul tenaga matahari
+#include <SolarPanel.h>
+
+// Pin yang terhubung ke sensor cahaya
+const int pinSensorCahaya = A0;
+
+// Objek motor
+MotorDriver motor;
+
+// Objek modul tenaga matahari
+SolarPanel solarPanel;
+
+void setup() {
+  // Inisialisasi motor
+  motor.begin(9, 10, 5, 6); // Pin motor dihubungkan ke pin 9, 10, 5, 6
+  
+  // Inisialisasi modul tenaga matahari
+  solarPanel.begin(A1); // Pin modul tenaga matahari dihubungkan ke pin analog A1
+  
+  // Inisialisasi Serial untuk debug
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Baca nilai sensor cahaya
+  int nilaiCahaya = analogRead(pinSensorCahaya);
+
+  // Debug: Tampilkan nilai sensor cahaya
+  Serial.print("Nilai Sensor Cahaya: ");
+  Serial.println(nilaiCahaya);
+
+  // Baca tegangan dari modul tenaga matahari
+  float teganganPanel = solarPanel.readVoltage();
+
+  // Debug: Tampilkan tegangan modul tenaga matahari
+  Serial.print("Tegangan Modul Matahari: ");
+  Serial.println(teganganPanel);
+
+  // Cek apakah intensitas cahaya cukup untuk bergerak
+  if (nilaiCahaya > 500 && teganganPanel > 4.0) {
+    // Gerakan robot ke depan
+    motor.forward();
+    delay(1000); // Durasi gerakan ke depan (ms)
+  } else {
+    // Berhenti jika intensitas cahaya atau tegangan kurang
+    motor.stop();
+    delay(500); // Waktu tunggu sebelum cek lagi (ms)
+  }
+} 
+
+#include <MotorDriver.h> dan #include <SolarPanel.h>: Menggunakan library MotorDriver untuk mengendalikan motor dan library SolarPanel untuk mengelola modul tenaga matahari. Pastikan library ini telah diinstal sebelum menggunakan program ini.
+
+const int pinSensorCahaya = A0;: Menentukan pin sensor cahaya yang terhubung ke pin analog A0 pada Arduino.
+
+MotorDriver motor; dan SolarPanel solarPanel;: Membuat objek motor dari kelas MotorDriver dan objek modul tenaga matahari dari kelas SolarPanel.
+
+void setup(): Fungsi setup yang dieksekusi sekali pada awal program.
+
+a. motor.begin(9, 10, 5, 6): Menginisialisasi motor dengan menentukan pin yang terhubung ke motor. Dalam contoh ini, pin motor dihubungkan ke pin 9, 10, 5, dan 6 pada Arduino.
+
+b. solarPanel.begin(A1): Menginisialisasi modul tenaga matahari dengan menentukan pin yang terhubung ke modul tenaga matahari. Dalam contoh ini, pin modul tenaga matahari dihubungkan ke pin analog A1 pada Arduino.
+
+c. Serial.begin(9600): Inisialisasi komunikasi serial untuk debugging dengan kecepatan baud 9600.
+
+void loop(): Fungsi loop yang dieksekusi secara berulang.
+
+a. int nilaiCahaya = analogRead(pinSensorCahaya): Membaca nilai sensor cahaya dari pin analog A0.
+
+b. float teganganPanel = solarPanel.readVoltage(): Membaca tegangan dari modul tenaga matahari.
+
+c. Serial.print("Nilai Sensor Cahaya: "); Serial.println(nilaiCahaya) dan Serial.print("Tegangan Modul Matahari: "); Serial.println(teganganPanel): Menampilkan nilai sensor cahaya dan tegangan modul tenaga matahari untuk debugging.
+
+d. if (nilaiCahaya > 500 && teganganPanel > 4.0): Cek apakah intensitas cahaya cukup dan tegangan modul tenaga matahari mencukupi untuk bergerak.
+
+e. motor.forward(): Jika kondisi terpenuhi, motor digerakkan ke depan.
+
+f. delay(1000): Motor bergerak ke depan selama 1 detik.
+
+g. else: Jika kondisi tidak terpenuhi, motor dihentikan.
+
+h. motor.stop(): Fungsi untuk menghentikan motor.
+
+i. delay(500): Waktu tunggu sebelum melakukan pengecekan kembali.
