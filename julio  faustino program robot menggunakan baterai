@@ -1,0 +1,104 @@
+// Library untuk mengendalikan motor
+#include <MotorDriver.h>
+
+// Library untuk mengukur jarak menggunakan sensor ultrasonik
+#include <Ultrasonic.h>
+
+// Pin yang terhubung ke sensor ultrasonik
+const int pinTrigger = 10;
+const int pinEcho = 11;
+
+// Objek motor
+MotorDriver motor;
+
+// Objek sensor ultrasonik
+Ultrasonic ultrasonic(pinTrigger, pinEcho);
+
+// Kapasitas baterai dalam mAh
+const float kapasitasBaterai = 5000;
+
+void setup() {
+  // Inisialisasi motor
+  motor.begin(3, 4, 5, 6); // Pin motor dihubungkan ke pin 3, 4, 5, 6
+  
+  // Inisialisasi Serial untuk debug
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Baca tinggi objek di depan robot menggunakan sensor ultrasonik
+  float jarak = ultrasonic.read();
+
+  // Debug: Tampilkan jarak di Serial Monitor
+  Serial.print("Jarak ke Objek: ");
+  Serial.println(jarak);
+
+  // Cek apakah ada objek di depan robot
+  if (jarak > 10) {
+    // Jika tidak ada objek, gerakan robot ke depan
+    motor.forward();
+  } else {
+    // Jika ada objek, hentikan robot
+    motor.stop();
+  }
+
+  // Simulasikan beban daya dari baterai
+  float bebanDaya = 0.1; // Misalnya, beban daya 0.1 Ampere
+  
+  // Hitung kapasitas baterai yang tersisa
+  float kapasitasTersisa = kapasitasBaterai - (millis() / 3600000.0 * bebanDaya);
+
+  // Debug: Tampilkan kapasitas baterai yang tersisa
+  Serial.print("Kapasitas Baterai Tersisa: ");
+  Serial.println(kapasitasTersisa);
+
+  // Cek apakah kapasitas baterai cukup
+  if (kapasitasTersisa > 0) {
+    // Lanjutkan operasi normal
+  } else {
+    // Hentikan robot jika kapasitas baterai habis
+    motor.stop();
+    Serial.println("Baterai Habis, Robot Berhenti");
+    while (true) {} // Loop tak terbatas untuk menjaga agar robot tidak bergerak
+  }
+
+  delay(500); // Waktu tunggu sebelum melakukan pengecekan kembali
+}
+
+#include <MotorDriver.h> dan #include <Ultrasonic.h>: Menggunakan library MotorDriver untuk mengendalikan motor dan library Ultrasonic untuk mengukur jarak menggunakan sensor ultrasonik. Pastikan library ini telah diinstal sebelum menggunakan program ini.
+
+const int pinTrigger = 9; dan const int pinEcho = 10;: Menentukan pin yang terhubung ke sensor ultrasonik (trigger dan echo).
+
+MotorDriver motor; dan Ultrasonic ultrasonic(pinTrigger, pinEcho);: Membuat objek motor dari kelas MotorDriver dan objek sensor ultrasonik dari kelas Ultrasonic.
+
+const float kapasitasBaterai = 5000;: Menentukan kapasitas baterai dalam mAh. Nilai ini dapat disesuaikan sesuai dengan kapasitas baterai yang digunakan.
+
+void setup(): Fungsi setup yang dieksekusi sekali pada awal program.
+
+a. motor.begin(5, 6, 7, 8): Menginisialisasi motor dengan menentukan pin yang terhubung ke motor. Dalam contoh ini, pin motor dihubungkan ke pin 5, 6, 7, dan 8 pada Arduino.
+
+b. Serial.begin(9600): Inisialisasi komunikasi serial untuk debugging dengan kecepatan baud 9600.
+
+void loop(): Fungsi loop yang dieksekusi secara berulang.
+
+a. float jarak = ultrasonic.read(): Membaca tinggi objek di depan robot menggunakan sensor ultrasonik.
+
+b. Serial.print("Jarak ke Objek: "); Serial.println(jarak): Menampilkan jarak ke objek di Serial Monitor untuk keperluan debugging.
+
+c. if (jarak > 10): Cek apakah ada objek di depan robot. Jika tidak ada, motor digerakkan ke depan.
+
+d. motor.forward(): Fungsi untuk menggerakkan robot ke depan.
+
+e. else: Jika ada objek di depan robot, motor dihentikan.
+
+f. float bebanDaya = 0.1 dan float kapasitasTersisa = kapasitasBaterai - (millis() / 3600000.0 * bebanDaya): Simulasi beban daya dari baterai dan menghitung kapasitas baterai yang tersisa berdasarkan waktu.
+
+g. Serial.print("Kapasitas Baterai Tersisa: "); Serial.println(kapasitasTersisa): Menampilkan kapasitas baterai yang tersisa di Serial Monitor untuk keperluan debugging.
+
+h. if (kapasitasTersisa > 0): Cek apakah kapasitas baterai cukup untuk melanjutkan operasi normal.
+
+i. else: Jika kapasitas baterai habis, motor dihentikan dan pesan error ditampilkan di Serial Monitor.
+
+j. while (true) {}: Loop tak terbatas untuk menjaga agar robot tidak bergerak jika kapasitas baterai habis.
+
+k. delay(500): Waktu tunggu sebelum melakukan pengecekan kembali.
