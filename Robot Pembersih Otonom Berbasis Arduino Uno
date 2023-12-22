@@ -1,0 +1,98 @@
+// Definisi pin sensor dan motor
+#define IR_SENSOR_PIN A0
+#define TAPE_SENSOR_PIN A1
+#define MOTOR_A_PIN1 2
+#define MOTOR_A_PIN2 3
+#define MOTOR_B_PIN1 4
+#define MOTOR_B_PIN2 5
+
+void setup() {
+  // Konfigurasi pin sebagai input atau output
+  pinMode(IR_SENSOR_PIN, INPUT);
+  pinMode(TAPE_SENSOR_PIN, INPUT);
+  pinMode(MOTOR_A_PIN1, OUTPUT);
+  pinMode(MOTOR_A_PIN2, OUTPUT);
+  pinMode(MOTOR_B_PIN1, OUTPUT);
+  pinMode(MOTOR_B_PIN2, OUTPUT);
+}
+
+void loop() {
+  // Baca data dari sensor jarak inframerah
+  int irSensorValue = analogRead(IR_SENSOR_PIN);
+
+  // Jika ada rintangan, hindari dengan menggerakkan robot ke belakang
+  if (irSensorValue > 500) {
+    moveBackward();
+    delay(500);
+    stopMotors();
+    delay(200);
+    turnLeft();
+  } else {
+    // Baca data dari sensor tepi
+    int tapeSensorValue = analogRead(TAPE_SENSOR_PIN);
+
+    // Jika mendeteksi tepi, putar robot
+    if (tapeSensorValue < 100) {
+      stopMotors();
+      delay(200);
+      turnRight();
+    } else {
+      // Jika tidak ada rintangan atau tepi, lanjutkan maju
+      moveForward();
+    }
+  }
+}
+
+// Fungsi untuk menggerakkan robot ke depan
+void moveForward() {
+  digitalWrite(MOTOR_A_PIN1, HIGH);
+  digitalWrite(MOTOR_A_PIN2, LOW);
+  digitalWrite(MOTOR_B_PIN1, HIGH);
+  digitalWrite(MOTOR_B_PIN2, LOW);
+}
+
+// Fungsi untuk menggerakkan robot ke belakang
+void moveBackward() {
+  digitalWrite(MOTOR_A_PIN1, LOW);
+  digitalWrite(MOTOR_A_PIN2, HIGH);
+  digitalWrite(MOTOR_B_PIN1, LOW);
+  digitalWrite(MOTOR_B_PIN2, HIGH);
+}
+
+// Fungsi untuk menghentikan motor
+void stopMotors() {
+  digitalWrite(MOTOR_A_PIN1, LOW);
+  digitalWrite(MOTOR_A_PIN2, LOW);
+  digitalWrite(MOTOR_B_PIN1, LOW);
+  digitalWrite(MOTOR_B_PIN2, LOW);
+}
+
+// Fungsi untuk memutar robot ke kiri
+void turnLeft() {
+  digitalWrite(MOTOR_A_PIN1, LOW);
+  digitalWrite(MOTOR_A_PIN2, HIGH);
+  digitalWrite(MOTOR_B_PIN1, HIGH);
+  digitalWrite(MOTOR_B_PIN2, LOW);
+}
+
+// Fungsi untuk memutar robot ke kanan
+void turnRight() {
+  digitalWrite(MOTOR_A_PIN1, HIGH);
+  digitalWrite(MOTOR_A_PIN2, LOW);
+  digitalWrite(MOTOR_B_PIN1, LOW);
+  digitalWrite(MOTOR_B_PIN2, HIGH);
+}
+
+Komponen Utama:
+Sensor Jarak Inframerah: Untuk mendeteksi rintangan di sekitar robot.
+Sensor Tepi (Tape Sensor): Untuk mengenali tepi lantai atau platform.
+Motor DC dan Roda Penggerak: Untuk memberikan gerakan robot.
+Modul Motor Driver: Mengendalikan kecepatan dan arah motor.
+Arduino Uno: Sebagai otak utama robot.
+Baterai dan Pengisi Daya: Menyediakan daya untuk robot.
+Fungsi Utama:
+Navigasi Otomatis: Program Arduino akan memanfaatkan data dari sensor jarak inframerah untuk menghindari rintangan dan memutuskan arah gerakan robot.
+Pendeteksian Tepi: Sensor tepi akan digunakan untuk mengenali tepi lantai atau platform dan menghindari jatuh.
+Kontrol Motor: Menggunakan motor driver untuk mengendalikan kecepatan dan arah gerakan robot.
+Pembersihan Secara Otonom: Robot akan bergerak di sekitar ruangan atau area tertentu, membersihkan sepanjang perjalanan.
+Antarmuka Pengguna Opsional: Menambahkan kemungkinan mengendalikan robot atau melihat statusnya melalui aplikasi seluler atau antarmuka web.
