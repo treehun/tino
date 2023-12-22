@@ -1,0 +1,57 @@
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+
+#define RELAY_PIN 8
+#define SOIL_MOISTURE_PIN A0
+
+Adafruit_BME280 bme;  // Inisialisasi objek sensor BME280
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(RELAY_PIN, OUTPUT);
+  
+  if (!bme.begin()) {
+    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    while (1);
+  }
+}
+
+void loop() {
+  float soilMoisture = analogRead(SOIL_MOISTURE_PIN);
+  float temperature = bme.readTemperature();
+  float humidity = bme.readHumidity();
+
+  Serial.print("Soil Moisture: ");
+  Serial.print(soilMoisture);
+  Serial.print("  Temperature: ");
+  Serial.print(temperature);
+  Serial.print(" *C  Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  // Mengaktifkan penyiraman otomatis jika tingkat kelembaban tanah rendah
+  if (soilMoisture < 500) {
+    digitalWrite(RELAY_PIN, HIGH); // Menyalakan pompa air
+    delay(5000);  // Durasi penyiraman (dapat disesuaikan)
+    digitalWrite(RELAY_PIN, LOW);  // Mematikan pompa air
+  }
+
+  delay(300000);  // Jeda 5 menit sebelum membaca sensor lagi
+}
+
+
+Komponen Utama:
+Sensor Tanah: Untuk mengukur kelembaban tanah.
+Sensor Suhu dan Kelembaban: Untuk memantau kondisi udara.
+Modul WiFi (ESP8266): Untuk mengirim data ke server dan menerima instruksi melalui aplikasi seluler.
+Relay dan Pompa Air: Untuk memberikan penyiraman otomatis.
+LCD Display: Menampilkan informasi lokal tentang kondisi tanaman dan taman.
+Aplikasi Seluler: Untuk memberikan pemantauan jarak jauh dan kontrol.
+Fungsi Utama:
+Pembacaan Sensor: Program Arduino akan membaca data dari sensor tanah, suhu, dan kelembaban secara berkala.
+Kontrol Penyiraman Otomatis: Menggunakan relay untuk mengaktifkan pompa air berdasarkan tingkat kelembaban tanah.
+Komunikasi Nirkabel: Menggunakan modul WiFi untuk mengirimkan data ke server dan menerima instruksi dari aplikasi seluler.
+Antarmuka Lokal: Menampilkan informasi kondisi taman di LCD Display.
+Aplikasi Seluler: Membuat aplikasi seluler sederhana yang memungkinkan pengguna memantau kondisi taman dan mengatur jadwal penyiraman.
+Notifikasi: Memberikan notifikasi melalui aplikasi seluler jika tingkat kelembaban tanah rendah atau jika ada masalah lain yang perlu perhatian.
