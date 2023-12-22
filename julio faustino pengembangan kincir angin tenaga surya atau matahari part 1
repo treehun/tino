@@ -1,0 +1,33 @@
+#include <Servo.h>
+
+int ldrPin = A0;   // Pin analog untuk sensor cahaya (LDR)
+int servoPin = 9;  // Pin untuk motor servo
+
+Servo myServo;
+
+void setup() {
+  Serial.begin(9600);
+  myServo.attach(servoPin);
+}
+
+void loop() {
+  int ldrValue = analogRead(ldrPin); // Baca nilai dari sensor cahaya
+  
+  // Konversi nilai sensor menjadi sudut putaran servo
+  int servoAngle = map(ldrValue, 0, 1023, 0, 180);
+  
+  // Batasi sudut servo antara 0 dan 180 derajat
+  servoAngle = constrain(servoAngle, 0, 180);
+  
+  // Aktifkan motor servo dengan sudut yang dihitung
+  myServo.write(servoAngle);
+  
+  // Tampilkan nilai sensor pada Serial Monitor
+  Serial.print("LDR Value: ");
+  Serial.print(ldrValue);
+  Serial.print("  Servo Angle: ");
+  Serial.println(servoAngle);
+  
+  delay(1000); // Tunda selama 1 detik
+}
+
